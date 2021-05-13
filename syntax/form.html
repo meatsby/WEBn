@@ -1,0 +1,20 @@
+<form action="https://web2-nodejs-psokr.run.goorm.io" method="post">
+	<p>
+		<input type="text" name="title">
+	</p>
+	<p>
+		<textarea name="description"></textarea>
+	</p>
+	<p>
+		<input type="submit">
+	</p>
+</form>
+
+// action 속성이 가리키는 서버로 쿼리스트링 형태의 데이터를 전송하는 HTML 의 기능
+// 생성, 수정, 삭제 를 하려는 데이터를 주소에 포함하고 있다면
+// 외부의 인원이 서버의 정보가 생성, 수정, 삭제 되는 일이 생김
+// 즉 GET 할 때는 쿼리스트링을 쓰고
+// 서버에 데이터를 생성, 수정, 삭제 할 때는 필요한 데이터를 url로 보내면 절대 안됨
+// method="post" 는 쿼리스트링을 숨기고 은밀하게 서버로 전송함
+// 위 처럼하면 아주 큰 데이터도 전송 가능
+// 반면에 url 로 전송할 경우 무한히 긴 데이터를 수용하지 못함 데이터가 잘릴수도 있음
