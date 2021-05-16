@@ -4,8 +4,12 @@ var url = require('url');
 var qs = require('querystring');
 var template = require('./lib/template.js');
 var path = require('path');
+var sanitizeHtml = require('sanitize-html');
 
-var app = http.createServer(function (request, response){
+var app = http.createServer(function(request, response){
+// http 라는 모듈(이면서 객체) 에 createServer 라는 함수(객체 안에 있을 때는 메소드)
+// 웹브라우저에서 들어온 요청에 대한 정보를 담고 있는 request 를 parameter 로 주기로 약속
+// 사용자에게 전송하고싶은 정보를 담고 있는 response 를 parameter 로 주기로 약속
 	var _url = request.url;
 	var queryData = url.parse(_url, true).query;
 	var pathname = url.parse(_url, true).pathname;
@@ -27,13 +31,17 @@ var app = http.createServer(function (request, response){
 				var filteredId = path.parse(queryData.id).base;
 				fs.readFile(`data/${filteredId}`, 'utf8', function(err, description){
 					var title = queryData.id;
+					var sanitizedTitle = sanitizeHtml(title);
+					var sanitizedDescription = sanitizeHtml(description, {
+						allowedTags:['h1']
+					});
 					var list = template.list(filelist);
-					var html = template.html(title, list, `
-						<h2>${title}</h2>${description}`, `
+					var html = template.html(sanitizedTitle, list, `
+						<h2>${sanitizedTitle}</h2>${sanitizedDescription}`, `
 						<a href="/create">create</a>
-						<a href="/update?id=${title}">update</a>
+						<a href="/update?id=${sanitizedTitle}">update</a>
 						<form action="delete_process" method="post">
-							<input type="hidden" name="id" value="${title}">
+							<input type="hidden" name="id" value="${sanitizedTitle}">
 							<input type="submit" value="delete">
 						</form>`
 					);
@@ -141,4 +149,4 @@ var app = http.createServer(function (request, response){
 		response.end('Not found');
 	}
 });
-app.listen(3000);
+app.listen(3000); // 웹브라우저로부터 접속이 3000번 포트로 들어오면 이 앱이 응답해서 동작한다
